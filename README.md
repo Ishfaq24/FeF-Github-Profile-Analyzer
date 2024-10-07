@@ -16,7 +16,5 @@ CSS3 (Flexbox/Grid)
 JavaScript
 Bootstrap
 Chart.js
-AOS (Animate on Scroll)
-FontAwesome
-Getting Started
+
 
