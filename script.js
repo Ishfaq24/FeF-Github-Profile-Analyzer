@@ -1,160 +1,147 @@
 const historyList = document.getElementById('historyList');
-    const clearHistoryButton = document.getElementById('clearHistory');
-    const themeToggleButton = document.getElementById('themeToggle');
-    const body = document.body;
+const clearHistoryButton = document.getElementById('clearHistory');
+const themeToggleButton = document.getElementById('themeToggle');
+const body = document.body;
 
-    // Check for saved theme in localStorage
-    function loadTheme() {
-        const savedTheme = localStorage.getItem('theme');
-        if (savedTheme) {
-            body.classList.remove('dark', 'light');
-            body.classList.add(savedTheme);
-        }
+// Check for saved theme in localStorage
+function loadTheme() {
+    const savedTheme = localStorage.getItem('theme');
+    if (savedTheme) {
+        body.classList.remove('dark', 'light');
+        body.classList.add(savedTheme);
     }
-
-    // Save the current theme to localStorage
-    function saveTheme(theme) {
-        localStorage.setItem('theme', theme);
-    }
-
-    // Toggle theme and save it
-    themeToggleButton.addEventListener('click', () => {
-        body.classList.toggle('dark');
-        body.classList.toggle('light');
-
-        const currentTheme = body.classList.contains('dark') ? 'dark' : 'light';
-        saveTheme(currentTheme);
-    });
-
-    // Initialize theme on page load
-    loadTheme();
-
-    document.getElementById('submit').addEventListener('click', () => {
-        const username = document.getElementById('username').value;
-        if (username) {
-            addToSearchHistory(username);
-            fetchGitHubData(username);
-        } else {
-            showError('Please enter a GitHub username.');
-        }
-    });
-
-    clearHistoryButton.addEventListener('click', () => {
-        localStorage.removeItem('searchHistory');
-        updateSearchHistory();
-    });
-
-    function addToSearchHistory(username) {
-        let history = JSON.parse(localStorage.getItem('searchHistory')) || [];
-        if (!history.includes(username)) {
-            history.push(username);
-            localStorage.setItem('searchHistory', JSON.stringify(history));
-            updateSearchHistory();
-        }
-    }
-
-
-    function updateSearchHistory() {
-        let history = JSON.parse(localStorage.getItem('searchHistory')) || [];
-        historyList.innerHTML = history.map(user => `
-            <li><button class="history-item" data-username="${user}">${user}</button></li>
-        `).join('');
-
-        // Add click event listener to each history item
-        document.querySelectorAll('.history-item').forEach(item => {
-            item.addEventListener('click', (e) => {
-                const username = e.target.getAttribute('data-username');
-                document.getElementById('username').value = username; // Set the input to the clicked username
-                fetchGitHubData(username); // Call the function to fetch data for the clicked username
-            });
-        });
-    }
-
-
-    function fetchGitHubData(username) {
-        const profileUrl = `https://api.github.com/users/${username}`;
-        const reposUrl = `https://api.github.com/users/${username}/repos`;
-
-        fetch(profileUrl)
-            .then(response => {
-                if (response.status === 404) {
-                    showError('GitHub user not found.');
-                    throw new Error('User not found');
-                }
-                return response.json();
-            })
-            .then(data => updateProfile(data))
-            .catch(error => console.error('Error fetching profile:', error));
-
-        fetch(reposUrl)
-            .then(response => response.json())
-            .then(data => {
-                updateRepositories(data);
-                updateLanguagesChart(data);
-            })
-            .catch(error => console.error('Error fetching repositories:', error));
-    }
-
-    function updateProfile(profile) {
-    const profileContainer = document.getElementById('profile');
-    if (!profile) {
-        showError('Profile data is not available.');
-        return;
-    }
-
-    profileContainer.innerHTML = `
-        <a href="${profile.html_url}" target="_blank">
-            <img src="${profile.avatar_url}" alt="${profile.login}" width="150">
-        </a>
-        <h3><a href="${profile.html_url}" target="_blank">${profile.name || profile.login}</a></h3>
-        <p>Followers: ${profile.followers}</p>
-        <p>Following: ${profile.following}</p>
-        <p>Public Repos: ${profile.public_repos}</p>
-    `;
-    document.getElementById('error').textContent = '';
 }
 
-    function updateRepositories(repositories) {
-        const repoContainer = document.getElementById('repositories');
-        if (repositories.length === 0) {
-            repoContainer.innerHTML = `<p>No public repositories found.</p>`;
-            return;
+// Save the current theme to localStorage
+function saveTheme(theme) {
+    localStorage.setItem('theme', theme);
+}
+
+// Toggle between dark and light mode
+themeToggleButton.addEventListener('click', () => {
+    const newTheme = body.classList.contains('dark') ? 'light' : 'dark';
+    body.classList.toggle('dark', newTheme === 'dark');
+    body.classList.toggle('light', newTheme === 'light');
+    saveTheme(newTheme);
+});
+
+// Load theme on page load
+loadTheme();
+
+document.getElementById('submit').addEventListener('click', function () {
+    const username = document.getElementById('username').value.trim();
+    if (username) {
+        fetchGitHubProfile(username);
+        saveSearchHistory(username);
+    }
+});
+
+clearHistoryButton.addEventListener('click', clearSearchHistory);
+
+function saveSearchHistory(username) {
+    let history = JSON.parse(localStorage.getItem('searchHistory')) || [];
+    history.unshift(username);
+    localStorage.setItem('searchHistory', JSON.stringify(history.slice(0, 10)));
+    displaySearchHistory();
+}
+
+function displaySearchHistory() {
+    const history = JSON.parse(localStorage.getItem('searchHistory')) || [];
+    historyList.innerHTML = '';
+    history.forEach(username => {
+        const listItem = document.createElement('li');
+        const button = document.createElement('button');
+        button.textContent = username;
+        button.onclick = () => {
+            document.getElementById('username').value = username;
+            fetchGitHubProfile(username);
+        };
+        listItem.appendChild(button);
+        historyList.appendChild(listItem);
+    });
+}
+
+function clearSearchHistory() {
+    localStorage.removeItem('searchHistory');
+    displaySearchHistory();
+}
+
+async function fetchGitHubProfile(username) {
+    try {
+        const profileResponse = await fetch(`https://api.github.com/users/${username}`);
+        if (!profileResponse.ok) {
+            throw new Error('User not found');
         }
-        repoContainer.innerHTML = repositories.map(repo => `
-            <div>
-                <strong><a href="${repo.html_url}" target="_blank">${repo.name}</a></strong>
-                <p>${repo.description || 'No description'}</p>
-                <p>Language: ${repo.language || 'Not specified'}</p>
-            </div>
-        `).join('');
+        const profileData = await profileResponse.json();
+        updateProfile(profileData);
+        fetchRepositories(username);
+    } catch (error) {
+        document.getElementById('error').textContent = error.message;
     }
+}
 
-    function updateLanguagesChart(repositories) {
-        const languageCount = {};
-        repositories.forEach(repo => {
-            const language = repo.language;
-            if (language) {
-                languageCount[language] = (languageCount[language] || 0) + 1;
+async function fetchRepositories(username) {
+    try {
+        const repoResponse = await fetch(`https://api.github.com/users/${username}/repos`);
+        if (!repoResponse.ok) {
+            throw new Error('Error fetching repositories');
+        }
+        const reposData = await repoResponse.json();
+        updateRepositories(reposData);
+        updateLanguagesChart(reposData);
+    } catch (error) {
+        document.getElementById('error').textContent = error.message;
+    }
+}
+
+function updateProfile(data) {
+    document.getElementById('profile').innerHTML = `
+        <img src="${data.avatar_url}" alt="${data.login}'s avatar">
+        <h3>${data.name || 'No name provided'}</h3>
+        <p>${data.bio || 'No bio provided'}</p>
+        <a href="${data.html_url}" target="_blank">View GitHub Profile</a>
+    `;
+}
+
+function updateRepositories(repos) {
+    const repositoriesDiv = document.getElementById('repositories');
+    repositoriesDiv.innerHTML = repos.map(repo => `
+        <div>
+            <h4><a href="${repo.html_url}" target="_blank">${repo.name}</a></h4>
+            <p>${repo.description || 'No description'}</p>
+            <p>Language: ${repo.language || 'Not specified'}</p>
+        </div>
+    `).join('');
+}
+
+function updateLanguagesChart(repos) {
+    const languageCounts = {};
+    repos.forEach(repo => {
+        if (repo.language) {
+            languageCounts[repo.language] = (languageCounts[repo.language] || 0) + 1;
+        }
+    });
+
+    const ctx = document.getElementById('languagesChart').getContext('2d');
+    new Chart(ctx, {
+        type: 'pie',
+        data: {
+            labels: Object.keys(languageCounts),
+            datasets: [{
+                data: Object.values(languageCounts),
+                backgroundColor: ['#FF6384', '#36A2EB', '#FFCE56', '#4BC0C0', '#9966FF', '#FF9F40']
+            }]
+        },
+        options: {
+            responsive: true,
+            plugins: {
+                legend: {
+                    position: 'top',
+                }
             }
-        });
+        }
+    });
+}
 
-        const ctx = document.getElementById('languagesChart').getContext('2d');
-        new Chart(ctx, {
-            type: 'pie',
-            data: {
-                labels: Object.keys(languageCount),
-                datasets: [{
-                    label: 'Languages Used',
-                    data: Object.values(languageCount),
-                    backgroundColor: ['#1e90ff', '#ff6347', '#32cd32', '#ffa500', '#ff69b4'],
-                }]
-            }
-        });
-    }
-
-    function showError(message) {
-        document.getElementById('error').textContent = message;
-    }
-
-    // Initialize search history on load
-    updateSearchHistory();
+// Display search history on load
+displaySearchHistory();
