@@ -19,4 +19,9 @@ Error Handling: Improved error messages and user experience for invalid searches
 <li>Bootstrap</li>
 <li>Chart.js</li>
 
+Try out link*
+## Try it Out
+https://yourusername.github.io/Github-Profile-Analyzer/
+
+
 
