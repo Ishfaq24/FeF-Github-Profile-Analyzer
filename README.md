@@ -12,10 +12,11 @@ Mobile Optimization: Responsive design ensures a seamless experience across devi
 Error Handling: Improved error messages and user experience for invalid searches.</p>
 
 <h3>Technologies Used</h3>
-HTML5
-CSS3 (Flexbox/Grid)
-JavaScript
-Bootstrap
-Chart.js
+
+<li>HTML5</li>
+<li>CSS3 (Flexbox/Grid)</li>
+<li>JavaScript</li>
+<li>Bootstrap</li>
+<li>Chart.js</li>
 
 
