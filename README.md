@@ -21,7 +21,7 @@ Error Handling: Improved error messages and user experience for invalid searches
 
 Try out link*
 ## Try it Out
-https://yourusername.github.io/Github-Profile-Analyzer/
+https://ishfaq24.github.io/Github-Profile-Analyzer/
 
 
 
