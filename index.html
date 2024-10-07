@@ -4,9 +4,266 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+
     <title>GitHub Profile Analyzer</title>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
-    <link rel="stylesheet" href="styles.css">
+
+    <style>
+        /* Global Styling */
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+body {
+    font-family: 'Arial', sans-serif;
+    line-height: 1.6;
+    display: flex;
+    flex-direction: column;
+    min-height: 100vh;
+    transition: background-color 0.3s, color 0.3s;
+}
+
+/* Dark Mode */
+body.dark {
+    background-color: #121212;
+    color: #ffffff;
+}
+
+/* Light Mode */
+body.light {
+    background-color: #ffffff;
+    color: #121212;
+}
+
+/* Container */
+.container {
+    max-width: 1200px;
+    margin: 0 auto;
+    padding: 20px;
+    flex: 1;
+}
+
+/* Header */
+header {
+    text-align: center;
+    margin-bottom: 40px;
+}
+
+h1 {
+    font-size: 2.5em;
+    margin-bottom: 20px;
+}
+
+/* Input and Button Styling */
+.input-container {
+    display: flex;
+    justify-content: center;
+    margin-bottom: 20px;
+}
+
+input {
+    padding: 15px;
+    font-size: 18px;
+    width: 300px;
+    margin-right: 10px;
+    border: 1px solid #555;
+    background-color: #222;
+    color: #fff;
+    border-radius: 5px;
+}
+
+button {
+    padding: 15px 30px;
+    font-size: 18px;
+    background-color: #1e90ff;
+    color: white;
+    border: none;
+    cursor: pointer;
+    border-radius: 5px;
+    transition: background-color 0.3s ease;
+}
+
+button:hover {
+    background-color: #1c7ed6;
+}
+
+/* Theme Toggle Button */
+.theme-toggle {
+    cursor: pointer;
+    background-color: transparent;
+    border: 1px solid #1e90ff;
+    border-radius: 5px;
+    padding: 10px;
+    margin-left: 10px;
+    color: #1e90ff;
+    transition: background-color 0.3s ease;
+}
+
+.theme-toggle:hover {
+    background-color: #1e90ff;
+    color: #ffffff;
+}
+
+/* Sections Without Boxes */
+section {
+    margin-bottom: 40px;
+    padding: 20px;
+    transition: background-color 0.3s, color 0.3s;
+}
+
+/* Light Mode Background for Sections */
+body.light section {
+    background-color: transparent;
+    color: inherit;
+}
+
+/* Profile Image Styling */
+#profile img {
+    border-radius: 50%;
+    margin-bottom: 10px;
+    width: 150px;
+    height: auto;
+    max-width: 100%; /* Make it responsive */
+    display: block;
+    margin: 0 auto; /* Center the image */
+}
+
+/* Repository and Profile Details Without Boxes */
+#repositories div, #profile {
+    margin-bottom: 20px;
+    padding: 10px;
+    background: transparent; /* Remove background */
+    border: none; /* Remove border */
+    color: inherit; /* Use the inherited color */
+}
+
+#repositories div a, #profile a {
+    color: #1e90ff; /* Keep the link color */
+    text-decoration: none;
+}
+
+#repositories div a:hover, #profile a:hover {
+    text-decoration: underline;
+}
+
+/* Chart Styling */
+#languagesChart {
+    max-width: 100%; /* Ensure it scales properly on smaller screens */
+}
+
+/* Error Message */
+#error {
+    color: #ff6347;
+    text-align: center;
+    margin-top: 20px;
+    font-size: 1.2em;
+}
+
+/* Search History Section */
+.search-history {
+    margin-top: 20px;
+    text-align: center;
+}
+
+.search-history ul {
+    list-style: none;
+    padding: 0;
+}
+
+.search-history li {
+    margin: 5px 0;
+}
+
+.search-history button {
+    background-color: #0b012d;
+    border: none;
+    border-radius: 5px;
+    color: white;
+    padding: 5px 10px;
+    cursor: pointer;
+}
+
+.search-history button:hover {
+    background-color: #e53e3e;
+}
+
+/* Footer Styling */
+.footer {
+    background-color: #222;
+    color: #fff;
+    padding: 20px 0;
+    text-align: center;
+}
+
+.footer .container {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+}
+
+.footer p {
+    margin: 5px 0;
+}
+
+.social-icons {
+    margin: 10px 0;
+    display: flex;
+    gap: 15px;
+}
+
+.social-icons a {
+    color: #fff;
+    font-size: 24px;
+    transition: color 0.3s ease;
+}
+
+.social-icons a:hover {
+    color: #f312d9;
+}
+
+/* Media Queries for Responsiveness */
+@media (max-width: 768px) {
+    .input-container {
+        flex-direction: column;
+        align-items: center;
+    }
+
+    input {
+        width: 100%;
+        margin-bottom: 10px;
+    }
+
+    h1 {
+        font-size: 2em;
+    }
+
+    footer {
+        font-size: 1em;
+    }
+
+    #profile img {
+        width: 100px; /* Reduce image size on mobile */
+    }
+
+    #languagesChart {
+        height: 300px; /* Adjust chart size */
+    }
+}
+
+/* Mobile Footer Adjustments */
+@media (max-width: 768px) {
+    .footer .container {
+        flex-direction: column;
+    }
+
+    .social-icons {
+        gap: 10px;
+    }
+}
+
+    </style>
 </head>
 <body class="dark">
     <div class="container">
@@ -62,8 +319,172 @@
           <p>Project by <a href="https://github.com/ishfaq24" target="_blank"><strong style="color: #fff;">ishfaq24</strong></a> | Proudly supported by <strong>HackHub_24</strong></p>
         </div>
       </footer>
+      
+        
+    
 
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
-    <script src="script.js"></script>
+   <script>
+    const historyList = document.getElementById('historyList');
+    const clearHistoryButton = document.getElementById('clearHistory');
+    const themeToggleButton = document.getElementById('themeToggle');
+    const body = document.body;
+
+    // Check for saved theme in localStorage
+    function loadTheme() {
+        const savedTheme = localStorage.getItem('theme');
+        if (savedTheme) {
+            body.classList.remove('dark', 'light');
+            body.classList.add(savedTheme);
+        }
+    }
+
+    // Save the current theme to localStorage
+    function saveTheme(theme) {
+        localStorage.setItem('theme', theme);
+    }
+
+    // Toggle theme and save it
+    themeToggleButton.addEventListener('click', () => {
+        body.classList.toggle('dark');
+        body.classList.toggle('light');
+
+        const currentTheme = body.classList.contains('dark') ? 'dark' : 'light';
+        saveTheme(currentTheme);
+    });
+
+    // Initialize theme on page load
+    loadTheme();
+
+    document.getElementById('submit').addEventListener('click', () => {
+        const username = document.getElementById('username').value;
+        if (username) {
+            addToSearchHistory(username);
+            fetchGitHubData(username);
+        } else {
+            showError('Please enter a GitHub username.');
+        }
+    });
+
+    clearHistoryButton.addEventListener('click', () => {
+        localStorage.removeItem('searchHistory');
+        updateSearchHistory();
+    });
+
+    function addToSearchHistory(username) {
+        let history = JSON.parse(localStorage.getItem('searchHistory')) || [];
+        if (!history.includes(username)) {
+            history.push(username);
+            localStorage.setItem('searchHistory', JSON.stringify(history));
+            updateSearchHistory();
+        }
+    }
+
+
+    function updateSearchHistory() {
+        let history = JSON.parse(localStorage.getItem('searchHistory')) || [];
+        historyList.innerHTML = history.map(user => `
+            <li><button class="history-item" data-username="${user}">${user}</button></li>
+        `).join('');
+
+        // Add click event listener to each history item
+        document.querySelectorAll('.history-item').forEach(item => {
+            item.addEventListener('click', (e) => {
+                const username = e.target.getAttribute('data-username');
+                document.getElementById('username').value = username; // Set the input to the clicked username
+                fetchGitHubData(username); // Call the function to fetch data for the clicked username
+            });
+        });
+    }
+
+
+    function fetchGitHubData(username) {
+        const profileUrl = `https://api.github.com/users/${username}`;
+        const reposUrl = `https://api.github.com/users/${username}/repos`;
+
+        fetch(profileUrl)
+            .then(response => {
+                if (response.status === 404) {
+                    showError('GitHub user not found.');
+                    throw new Error('User not found');
+                }
+                return response.json();
+            })
+            .then(data => updateProfile(data))
+            .catch(error => console.error('Error fetching profile:', error));
+
+        fetch(reposUrl)
+            .then(response => response.json())
+            .then(data => {
+                updateRepositories(data);
+                updateLanguagesChart(data);
+            })
+            .catch(error => console.error('Error fetching repositories:', error));
+    }
+
+    function updateProfile(profile) {
+    const profileContainer = document.getElementById('profile');
+    if (!profile) {
+        showError('Profile data is not available.');
+        return;
+    }
+
+    profileContainer.innerHTML = `
+        <a href="${profile.html_url}" target="_blank">
+            <img src="${profile.avatar_url}" alt="${profile.login}" width="150">
+        </a>
+        <h3><a href="${profile.html_url}" target="_blank">${profile.name || profile.login}</a></h3>
+        <p>Followers: ${profile.followers}</p>
+        <p>Following: ${profile.following}</p>
+        <p>Public Repos: ${profile.public_repos}</p>
+    `;
+    document.getElementById('error').textContent = '';
+}
+
+    function updateRepositories(repositories) {
+        const repoContainer = document.getElementById('repositories');
+        if (repositories.length === 0) {
+            repoContainer.innerHTML = `<p>No public repositories found.</p>`;
+            return;
+        }
+        repoContainer.innerHTML = repositories.map(repo => `
+            <div>
+                <strong><a href="${repo.html_url}" target="_blank">${repo.name}</a></strong>
+                <p>${repo.description || 'No description'}</p>
+                <p>Language: ${repo.language || 'Not specified'}</p>
+            </div>
+        `).join('');
+    }
+
+    function updateLanguagesChart(repositories) {
+        const languageCount = {};
+        repositories.forEach(repo => {
+            const language = repo.language;
+            if (language) {
+                languageCount[language] = (languageCount[language] || 0) + 1;
+            }
+        });
+
+        const ctx = document.getElementById('languagesChart').getContext('2d');
+        new Chart(ctx, {
+            type: 'pie',
+            data: {
+                labels: Object.keys(languageCount),
+                datasets: [{
+                    label: 'Languages Used',
+                    data: Object.values(languageCount),
+                    backgroundColor: ['#1e90ff', '#ff6347', '#32cd32', '#ffa500', '#ff69b4'],
+                }]
+            }
+        });
+    }
+
+    function showError(message) {
+        document.getElementById('error').textContent = message;
+    }
+
+    // Initialize search history on load
+    updateSearchHistory();
+</script>
 </body>
 </html>
