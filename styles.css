@@ -49,6 +49,8 @@ h1 {
 .input-container {
     display: flex;
     justify-content: center;
+    align-items: center;
+    gap: 10px; /* Add gap to ensure spacing between elements */
     margin-bottom: 20px;
 }
 
@@ -56,7 +58,6 @@ input {
     padding: 15px;
     font-size: 18px;
     width: 300px;
-    margin-right: 10px;
     border: 1px solid #555;
     background-color: #222;
     color: #fff;
@@ -85,7 +86,6 @@ button:hover {
     border: 1px solid #1e90ff;
     border-radius: 5px;
     padding: 10px;
-    margin-left: 10px;
     color: #1e90ff;
     transition: background-color 0.3s ease;
 }
@@ -211,11 +211,22 @@ section {
     .input-container {
         flex-direction: column;
         align-items: center;
+        gap: 10px; /* Maintain spacing between input, button, and toggle */
     }
 
     input {
         width: 100%;
         margin-bottom: 10px;
+    }
+
+    button {
+        width: 100%;
+        margin-top: 10px; /* Ensure the button has some space from the input */
+    }
+
+    .theme-toggle {
+        width: 100%;
+        margin-top: 10px; /* Ensure the toggle has some space from the button */
     }
 
     h1 {
