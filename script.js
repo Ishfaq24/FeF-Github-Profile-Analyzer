@@ -2,6 +2,7 @@ const historyList = document.getElementById('historyList');
 const clearHistoryButton = document.getElementById('clearHistory');
 const themeToggleButton = document.getElementById('themeToggle');
 const body = document.body;
+let languagesChart;
 
 // Check for saved theme in localStorage
 function loadTheme() {
@@ -122,8 +123,23 @@ function updateLanguagesChart(repos) {
         }
     });
 
+    // Check if there is any language data to display
+    if (Object.keys(languageCounts).length === 0) {
+        document.getElementById('languagesChart').style.display = 'none';
+        document.getElementById('error').textContent = 'No language data available to display.';
+        return;
+    } else {
+        document.getElementById('languagesChart').style.display = 'block';
+    }
+
     const ctx = document.getElementById('languagesChart').getContext('2d');
-    new Chart(ctx, {
+
+    // Destroy existing chart if it exists
+    if (languagesChart) {
+        languagesChart.destroy();
+    }
+
+    languagesChart = new Chart(ctx, {
         type: 'pie',
         data: {
             labels: Object.keys(languageCounts),
