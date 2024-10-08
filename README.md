@@ -16,7 +16,6 @@ Error Handling: Improved error messages and user experience for invalid searches
 <li>HTML5</li>
 <li>CSS3 (Flexbox/Grid)</li>
 <li>JavaScript</li>
-<li>Bootstrap</li>
 <li>Chart.js</li>
 
 Try out link*
