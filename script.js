@@ -1,163 +1,160 @@
-const historyList = document.getElementById('historyList');
-const clearHistoryButton = document.getElementById('clearHistory');
-const themeToggleButton = document.getElementById('themeToggle');
-const body = document.body;
-let languagesChart;
+ // Theme Management
+        const themeToggle = document.getElementById('themeToggle');
+        const body = document.body;
 
-// Check for saved theme in localStorage
-function loadTheme() {
-    const savedTheme = localStorage.getItem('theme');
-    if (savedTheme) {
-        body.classList.remove('dark', 'light');
-        body.classList.add(savedTheme);
-    }
-}
+        function loadTheme() {
+            const savedTheme = localStorage.getItem('theme') || 'dark';
+            body.className = savedTheme;
+            themeToggle.textContent = savedTheme === 'dark' ? '🌙' : '🌞';
+        }
 
-// Save the current theme to localStorage
-function saveTheme(theme) {
-    localStorage.setItem('theme', theme);
-}
+        themeToggle.addEventListener('click', () => {
+            const newTheme = body.classList.contains('dark') ? 'light' : 'dark';
+            body.className = newTheme;
+            themeToggle.textContent = newTheme === 'dark' ? '🌙' : '🌞';
+            localStorage.setItem('theme', newTheme);
+        });
 
-// Toggle between dark and light mode
-themeToggleButton.addEventListener('click', () => {
-    const newTheme = body.classList.contains('dark') ? 'light' : 'dark';
-    body.classList.toggle('dark', newTheme === 'dark');
-    body.classList.toggle('light', newTheme === 'light');
-    saveTheme(newTheme);
-});
+        // Sidebar Management
+        const burgerMenu = document.getElementById('burgerMenu');
+        const sidebar = document.getElementById('sidebar');
+        const overlay = document.getElementById('overlay');
+        const closeMenu = document.getElementById('closeMenu');
 
-// Load theme on page load
-loadTheme();
+        function toggleSidebar() {
+            sidebar.classList.toggle('active');
+            overlay.style.display = sidebar.classList.contains('active') ? 'block' : 'none';
+        }
 
-document.getElementById('submit').addEventListener('click', function () {
-    const username = document.getElementById('username').value.trim();
-    if (username) {
-        fetchGitHubProfile(username);
-        saveSearchHistory(username);
-    }
-});
+        burgerMenu.addEventListener('click', toggleSidebar);
+        closeMenu.addEventListener('click', toggleSidebar);
+        overlay.addEventListener('click', toggleSidebar);
 
-clearHistoryButton.addEventListener('click', clearSearchHistory);
+        // Search History
+        const historyList = document.getElementById('historyList');
+        const clearHistoryButton = document.getElementById('clearHistory');
 
-function saveSearchHistory(username) {
-    let history = JSON.parse(localStorage.getItem('searchHistory')) || [];
-    history.unshift(username);
-    localStorage.setItem('searchHistory', JSON.stringify(history.slice(0, 10)));
-    displaySearchHistory();
-}
+        function saveSearchHistory(username) {
+            const history = JSON.parse(localStorage.getItem('searchHistory') || '[]');
+            if (!history.includes(username)) {
+                history.unshift(username);
+                localStorage.setItem('searchHistory', JSON.stringify(history.slice(0, 10)));
+            }
+            displaySearchHistory();
+        }
 
-function displaySearchHistory() {
-    const history = JSON.parse(localStorage.getItem('searchHistory')) || [];
-    historyList.innerHTML = '';
-    history.forEach(username => {
-        const listItem = document.createElement('li');
-        const button = document.createElement('button');
-        button.textContent = username;
-        button.onclick = () => {
+        function displaySearchHistory() {
+            const history = JSON.parse(localStorage.getItem('searchHistory') || '[]');
+            historyList.innerHTML = history.map(username => `
+                <li>
+                    <button onclick="loadSearch('${username}')">${username}</button>
+                </li>
+            `).join('');
+        }
+
+        function loadSearch(username) {
             document.getElementById('username').value = username;
             fetchGitHubProfile(username);
-        };
-        listItem.appendChild(button);
-        historyList.appendChild(listItem);
-    });
-}
-
-function clearSearchHistory() {
-    localStorage.removeItem('searchHistory');
-    displaySearchHistory();
-}
-
-async function fetchGitHubProfile(username) {
-    try {
-        const profileResponse = await fetch(`https://api.github.com/users/${username}`);
-        if (!profileResponse.ok) {
-            throw new Error('User not found');
+            toggleSidebar();
         }
-        const profileData = await profileResponse.json();
-        updateProfile(profileData);
-        fetchRepositories(username);
-    } catch (error) {
-        document.getElementById('error').textContent = error.message;
-    }
-}
 
-async function fetchRepositories(username) {
-    try {
-        const repoResponse = await fetch(`https://api.github.com/users/${username}/repos`);
-        if (!repoResponse.ok) {
-            throw new Error('Error fetching repositories');
-        }
-        const reposData = await repoResponse.json();
-        updateRepositories(reposData);
-        updateLanguagesChart(reposData);
-    } catch (error) {
-        document.getElementById('error').textContent = error.message;
-    }
-}
+        clearHistoryButton.addEventListener('click', () => {
+            localStorage.removeItem('searchHistory');
+            displaySearchHistory();
+        });
 
-function updateProfile(data) {
-    document.getElementById('profile').innerHTML = `
-        <img src="${data.avatar_url}" alt="${data.login}'s avatar">
-        <h3>${data.name || 'No name provided'}</h3>
-        <p>${data.bio || 'No bio provided'}</p>
-        <a href="${data.html_url}" target="_blank">View GitHub Profile</a>
-    `;
-}
+        // GitHub Integration
+        let chartInstance = null;
 
-function updateRepositories(repos) {
-    const repositoriesDiv = document.getElementById('repositories');
-    repositoriesDiv.innerHTML = repos.map(repo => `
-        <div>
-            <h4><a href="${repo.html_url}" target="_blank">${repo.name}</a></h4>
-            <p>${repo.description || 'No description'}</p>
-            <p>Language: ${repo.language || 'Not specified'}</p>
-        </div>
-    `).join('');
-}
+        async function fetchGitHubProfile(username) {
+            try {
+                const [profileRes, reposRes] = await Promise.all([
+                    fetch(`https://api.github.com/users/${username}`),
+                    fetch(`https://api.github.com/users/${username}/repos`)
+                ]);
 
-function updateLanguagesChart(repos) {
-    const languageCounts = {};
-    repos.forEach(repo => {
-        if (repo.language) {
-            languageCounts[repo.language] = (languageCounts[repo.language] || 0) + 1;
-        }
-    });
+                if (!profileRes.ok) throw new Error('User not found');
+                if (!reposRes.ok) throw new Error('Failed to load repositories');
 
-    // Check if there is any language data to display
-    if (Object.keys(languageCounts).length === 0) {
-        document.getElementById('languagesChart').style.display = 'none';
-        document.getElementById('error').textContent = 'No language data available to display.';
-        return;
-    } else {
-        document.getElementById('languagesChart').style.display = 'block';
-    }
+                const profile = await profileRes.json();
+                const repos = await reposRes.json();
 
-    const ctx = document.getElementById('languagesChart').getContext('2d');
-
-    // Destroy existing chart if it exists
-    if (languagesChart) {
-        languagesChart.destroy();
-    }
-
-    languagesChart = new Chart(ctx, {
-        type: 'pie',
-        data: {
-            labels: Object.keys(languageCounts),
-            datasets: [{
-                data: Object.values(languageCounts),
-                backgroundColor: ['#FF6384', '#36A2EB', '#FFCE56', '#4BC0C0', '#9966FF', '#FF9F40']
-            }]
-        },
-        options: {
-            responsive: true,
-            plugins: {
-                legend: {
-                    position: 'top',
-                }
+                displayProfile(profile);
+                displayRepositories(repos);
+                updateLanguageChart(repos);
+                saveSearchHistory(username);
+                document.getElementById('error').textContent = '';
+            } catch (error) {
+                document.getElementById('error').textContent = error.message;
+                if (chartInstance) chartInstance.destroy();
             }
         }
-    });
-}
 
-// Display search history on load
-displaySearchHistory();
+        function displayProfile(profile) {
+            document.getElementById('profile').innerHTML = `
+                <img src="${profile.avatar_url}" alt="${profile.login}">
+                <h3>${profile.name || profile.login}</h3>
+                <p>${profile.bio || 'No bio available'}</p>
+                <p>📌 ${profile.location || 'No location specified'}</p>
+                <p>👥 Followers: ${profile.followers} | Following: ${profile.following}</p>
+                <a href="${profile.html_url}" target="_blank">View Profile →</a>
+            `;
+        }
+
+        function displayRepositories(repos) {
+            const sortedRepos = repos.sort((a, b) => b.stargazers_count - a.stargazers_count);
+            document.getElementById('repositories').innerHTML = sortedRepos.slice(0, 5).map(repo => `
+                <div>
+                    <h4><a href="${repo.html_url}" target="_blank">${repo.name}</a></h4>
+                    <p>${repo.description || 'No description available'}</p>
+                    <p>⭐ ${repo.stargazers_count} | 🍴 ${repo.forks_count} | 📅 ${new Date(repo.updated_at).toLocaleDateString()}</p>
+                    <p>${repo.language ? `🔧 Main Language: ${repo.language}` : ''}</p>
+                </div>
+            `).join('');
+        }
+
+        function updateLanguageChart(repos) {
+            const ctx = document.getElementById('languagesChart').getContext('2d');
+            const languages = repos.reduce((acc, repo) => {
+                if (repo.language) acc[repo.language] = (acc[repo.language] || 0) + 1;
+                return acc;
+            }, {});
+
+            if (chartInstance) chartInstance.destroy();
+
+            chartInstance = new Chart(ctx, {
+                type: 'doughnut',
+                data: {
+                    labels: Object.keys(languages),
+                    datasets: [{
+                        data: Object.values(languages),
+                        backgroundColor: [
+                            '#FF6384', '#36A2EB', '#FFCE56', '#4BC0C0',
+                            '#9966FF', '#FF9F40', '#E7E9ED'
+                        ],
+                        borderColor: body.classList.contains('dark') ? '#161b22' : '#ffffff',
+                        borderWidth: 2
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    plugins: {
+                        legend: {
+                            position: 'bottom',
+                            labels: {
+                                color: body.classList.contains('dark') ? '#c9d1d9' : '#121212'
+                            }
+                        }
+                    }
+                }
+            });
+        }
+
+        // Initialization
+        document.getElementById('submit').addEventListener('click', () => {
+            const username = document.getElementById('username').value.trim();
+            if (username) fetchGitHubProfile(username);
+        });
+
+        loadTheme();
+        displaySearchHistory();
