@@ -1,4 +1,4 @@
-        /* CSS Variables */
+ /* CSS Variables */
         :root {
             --bg-color: #ffffff;
             --text-color: #121212;
@@ -17,6 +17,50 @@
             --border-color: #30363d;
             --error-color: #ff4500;
         }
+        @keyframes gradientShift {
+            0% { background-position: 0% 50%; }
+            50% { background-position: 100% 50%; }
+            100% { background-position: 0% 50%; }
+        }
+
+        .dynamic-header {
+            text-align: center;
+            margin: 2rem 0;
+            position: relative;
+            padding: 1rem 0;
+        }
+
+        .title-container {
+            display: inline-flex;
+            align-items: center;
+            gap: 1rem;
+        }
+
+        .github-logo {
+            width: 50px;
+            height: 50px;
+            filter: drop-shadow(0 0 2px rgba(255,255,255,0.5));
+        }
+
+        .dynamic-title {
+            font-family: 'Courier New', monospace;
+            font-size: 2.8rem;
+            background: linear-gradient(45deg, #4078c0, #6e5494, #bd2c00);
+            background-size: 200% 200%;
+            -webkit-background-clip: text;
+            background-clip: text;
+            color: transparent;
+            animation: gradientShift 8s ease infinite;
+            text-shadow: 2px 2px 4px rgba(0,0,0,0.3);
+            letter-spacing: -2px;
+            font-weight: 700;
+            transition: transform 0.3s ease;
+        }
+
+        .dynamic-title:hover {
+            transform: scale(1.05);
+        }
+
 
         /* Global Styling */
         * {
@@ -250,4 +294,12 @@
                 left: 0;
             }
         }
-            
+        @media (max-width: 768px) {
+            .dynamic-title {
+                font-size: 2rem;
+            }
+            .github-logo {
+                width: 40px;
+                height: 40px;
+            }
+        }
