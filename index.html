@@ -3,25 +3,46 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
     <title>GitHub Profile Analyzer</title>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
-    <link rel="stylesheet" href="styles.css">
+    
 </head>
 <body class="dark">
+    <!-- Burger Menu -->
+    <div class="burger-menu" id="burgerMenu">☰</div>
+    
+    <!-- Sidebar -->
+    <div class="sidebar" id="sidebar">
+        <div class="sidebar-header">
+            <h3>Search History</h3>
+            <span class="close-btn" id="closeMenu">×</span>
+        </div>
+        <ul id="historyList"></ul>
+        <button id="clearHistory">Clear History</button>
+    </div>
+    
+    <!-- Overlay -->
+    <div class="overlay" id="overlay"></div>
+
+    <!-- Theme Toggle -->
+    <button class="theme-toggle" id="themeToggle">🌙</button>
+
     <div class="container">
-        <header>
-            <h1>GitHub Profile Analyzer</h1>
+        <header class="dynamic-header">
+            <div class="title-container">
+                <img src="https://github.githubassets.com/images/modules/logos_page/GitHub-Mark.png" 
+                     alt="GitHub Logo" 
+                     class="github-logo">
+                <h1 class="dynamic-title">PROFILE ANALYZER</h1>
+                <img src="https://github.githubassets.com/images/modules/logos_page/GitHub-Mark.png" 
+                     alt="GitHub Logo" 
+                     class="github-logo">
+            </div>
             <div class="input-container">
                 <input type="text" id="username" placeholder="Enter GitHub Username">
                 <button id="submit">Search</button>
-                <button class="theme-toggle" id="themeToggle">Toggle Dark/Light Mode</button>
             </div>
-            <div class="search-history">
-                <h2>Search History</h2>
-                <ul id="historyList"></ul>
-                <button id="clearHistory">Clear History</button>
-            </div>
+           
         </header>
         
         <section id="profile-overview">
@@ -36,7 +57,7 @@
         
         <section id="languages-used">
             <h2>Languages Used</h2>
-            <canvas id="languagesChart" style="height: 400px;"></canvas>
+            <canvas id="languagesChart"></canvas>
         </section>
         
         <div id="error"></div>
@@ -44,26 +65,18 @@
 
     <footer class="footer">
         <div class="container">
-          <p>Connect with me:</p>
-          <div class="social-icons">
-            <a href="https://discord.com/HackHub_24" target="_blank" aria-label="Discord">
-              <i class="fab fa-discord"></i>
-            </a>
-            <a href="https://instagram.com/ishfaqnazir_24" target="_blank" aria-label="Instagram">
-              <i class="fab fa-instagram"></i>
-            </a>
-            <a href="https://facebook.com/ IsHfaq Nazir" target="_blank" aria-label="Facebook">
-              <i class="fab fa-facebook"></i>
-            </a>
-            <a href="https://twitter.com/" target="_blank" aria-label="Twitter">
-              <i class="fab fa-twitter"></i>
-            </a>
-          </div>
-          <p>Project by <a href="https://github.com/ishfaq24" target="_blank"><strong style="color: #fff;">ishfaq24</strong></a> | Proudly supported by <a href="https://github.com/Dev-Wizards" target="_blank"><strong>Dev Wizards</strong></a></p>
+            <p>Connect with me:</p>
+            <div class="social-icons">
+                <a href="https://discord.com/HackHub_24" target="_blank"><i class="fab fa-discord"></i></a>
+                <a href="https://instagram.com/ishfaqnazir_24" target="_blank"><i class="fab fa-instagram"></i></a>
+                <a href="https://facebook.com/IsHfaqNazir" target="_blank"><i class="fab fa-facebook"></i></a>
+                <a href="https://twitter.com/" target="_blank"><i class="fab fa-twitter"></i></a>
+            </div>
+            <p>Project by <a href="https://github.com/ishfaq24" target="_blank">ishfaq24</a></p>
         </div>
-      </footer>
+    </footer>
 
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
-    <script src="script.js"></script>
+    
 </body>
-</html> 
+</html>
