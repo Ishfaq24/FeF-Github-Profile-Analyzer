@@ -1,254 +1,253 @@
-/* Global Styling */
-* {
-    margin: 0;
-    padding: 0;
-    box-sizing: border-box;
-}
+        /* CSS Variables */
+        :root {
+            --bg-color: #ffffff;
+            --text-color: #121212;
+            --primary-color: #1e90ff;
+            --card-bg: #f6f8fa;
+            --border-color: #30363d;
+            --error-color: #ff6347;
+        }
 
-body {
-    font-family: 'Arial', sans-serif;
-    line-height: 1.6;
-    display: flex;
-    flex-direction: column;
-    min-height: 100vh;
-    transition: background-color 0.3s, color 0.3s;
-}
+        /* Dark Theme */
+        body.dark {
+            --bg-color: #0d1117;
+            --text-color: #c9d1d9;
+            --primary-color: #58a6ff;
+            --card-bg: #161b22;
+            --border-color: #30363d;
+            --error-color: #ff4500;
+        }
 
-/* Dark Mode */
-body.dark {
-    background-color: #121212;
-    color: #ffffff;
-}
+        /* Global Styling */
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
 
-/* Light Mode */
-body.light {
-    background-color: #ffffff;
-    color: #121212;
-}
+        body {
+            font-family: 'Arial', sans-serif;
+            line-height: 1.6;
+            min-height: 100vh;
+            background-color: var(--bg-color);
+            color: var(--text-color);
+            transition: background-color 0.3s, color 0.3s;
+        }
 
-/* Container */
-.container {
-    max-width: 1200px;
-    margin: 0 auto;
-    padding: 20px;
-    flex: 1;
-}
+        /* Theme Toggle */
+        .theme-toggle {
+            position: fixed;
+            top: 20px;
+            right: 20px;
+            cursor: pointer;
+            background: none;
+            border: none;
+            font-size: 24px;
+            z-index: 1001;
+            color: var(--text-color);
+        }
 
-/* Header */
-header {
-    text-align: center;
-    margin-bottom: 40px;
-}
+        /* Burger Menu */
+        .burger-menu {
+            position: fixed;
+            top: 20px;
+            left: 20px;
+            z-index: 1001;
+            cursor: pointer;
+            color: var(--text-color);
+            font-size: 24px;
+        }
 
-h1 {
-    font-size: 2.5em;
-    margin-bottom: 20px;
-}
+        /* Sidebar */
+        .sidebar {
+            position: fixed;
+            left: -250px;
+            top: 0;
+            height: 100%;
+            width: 250px;
+            background-color: var(--card-bg);
+            transition: 0.3s;
+            padding: 20px;
+            z-index: 1000;
+            box-shadow: 2px 0 5px rgba(0, 0, 0, 0.2);
+        }
 
-/* Input and Button Styling */
-.input-container {
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    gap: 10px; /* Add gap to ensure spacing between elements */
-    margin-bottom: 20px;
-}
+        .sidebar.active {
+            left: 0;
+        }
 
-input {
-    padding: 15px;
-    font-size: 18px;
-    width: 300px;
-    border: 1px solid #555;
-    background-color: #222;
-    color: #fff;
-    border-radius: 5px;
-}
+        .sidebar-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 20px;
+        }
 
-button {
-    padding: 15px 30px;
-    font-size: 18px;
-    background-color: #1e90ff;
-    color: white;
-    border: none;
-    cursor: pointer;
-    border-radius: 5px;
-    transition: background-color 0.3s ease;
-}
+        .close-btn {
+            cursor: pointer;
+            font-size: 20px;
+        }
 
-button:hover {
-    background-color: #1c7ed6;
-}
+        .overlay {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.5);
+            z-index: 999;
+        }
 
-/* Theme Toggle Button */
-.theme-toggle {
-    cursor: pointer;
-    background-color: transparent;
-    border: 1px solid #1e90ff;
-    border-radius: 5px;
-    padding: 10px;
-    color: #1e90ff;
-    transition: background-color 0.3s ease;
-}
+        /* Container */
+        .container {
+            max-width: 1200px;
+            margin: 60px auto 0;
+            padding: 20px;
+        }
 
-.theme-toggle:hover {
-    background-color: #1e90ff;
-    color: #ffffff;
-}
+        /* Header */
+        header {
+            text-align: center;
+            margin-bottom: 40px;
+        }
 
-/* Sections */
-section {
-    margin-bottom: 40px;
-    padding: 20px;
-    transition: background-color 0.3s, color 0.3s;
-}
+        h1 {
+            font-size: 2.5em;
+            margin-bottom: 20px;
+        }
 
-/* Profile Image Styling */
-#profile img {
-    border-radius: 50%;
-    margin-bottom: 10px;
-    width: 150px;
-    height: auto;
-    max-width: 100%;
-    display: block;
-    margin: 0 auto;
-}
+        /* Input and Button */
+        .input-container {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            gap: 10px;
+            margin-bottom: 20px;
+        }
 
-/* Repository and Profile Details */
-#repositories div, #profile {
-    margin-bottom: 20px;
-    padding: 10px;
-    background: transparent;
-    border: none;
-    color: inherit;
-}
+        input {
+            padding: 15px;
+            font-size: 18px;
+            width: 300px;
+            border: 1px solid var(--border-color);
+            background-color: var(--card-bg);
+            color: var(--text-color);
+            border-radius: 5px;
+        }
 
-#repositories div a, #profile a {
-    color: #1e90ff;
-    text-decoration: none;
-}
+        button:not(.theme-toggle, .burger-menu) {
+            padding: 15px 30px;
+            font-size: 18px;
+            background-color: var(--primary-color);
+            color: white;
+            border: none;
+            cursor: pointer;
+            border-radius: 5px;
+            transition: filter 0.3s ease;
+        }
 
-#repositories div a:hover, #profile a:hover {
-    text-decoration: underline;
-}
+        button:hover:not(.theme-toggle, .burger-menu) {
+            filter: brightness(0.9);
+        }
 
-/* Chart Styling */
-#languagesChart {
-    max-width: 100%;
-}
+        /* Sections */
+        section {
+            margin-bottom: 40px;
+            padding: 20px;
+            background-color: var(--card-bg);
+            border-radius: 8px;
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+        }
 
-/* Error Message */
-#error {
-    color: #ff6347;
-    text-align: center;
-    margin-top: 20px;
-    font-size: 1.2em;
-}
+        /* Profile Image */
+        #profile img {
+            border-radius: 50%;
+            margin-bottom: 10px;
+            width: 150px;
+            height: auto;
+            max-width: 100%;
+            display: block;
+            margin: 0 auto;
+        }
 
-/* Search History Section */
-.search-history {
-    margin-top: 20px;
-    text-align: center;
-}
+        /* Repository Details */
+        #repositories div {
+            margin-bottom: 20px;
+            padding: 15px;
+            border-radius: 6px;
+            background-color: var(--bg-color);
+        }
 
-.search-history ul {
-    list-style: none;
-    padding: 0;
-}
+        #repositories div a, #profile a {
+            color: var(--primary-color);
+            text-decoration: none;
+        }
 
-.search-history li {
-    margin: 5px 0;
-}
+        /* Chart */
+        #languagesChart {
+            max-width: 100%;
+        }
 
-.search-history button {
-    background-color: #0b012d;
-    border: none;
-    border-radius: 5px;
-    color: white;
-    padding: 5px 10px;
-    cursor: pointer;
-}
+        /* Error Message */
+        #error {
+            color: var(--error-color);
+            text-align: center;
+            margin-top: 20px;
+            font-size: 1.2em;
+        }
 
-.search-history button:hover {
-    background-color: #e53e3e;
-}
+        /* Search History */
+        #historyList {
+            list-style: none;
+            padding: 0;
+        }
 
-/* Footer Styling */
-.footer {
-    background-color: #222;
-    color: #fff;
-    padding: 20px 0;
-    text-align: center;
-}
+        #historyList li {
+            margin: 10px 0;
+        }
 
-.footer .container {
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-}
+        #historyList button {
+            width: 100%;
+            text-align: left;
+            padding: 8px;
+            background: var(--bg-color);
+            color: var(--text-color);
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+        }
 
-.footer p {
-    margin: 5px 0;
-}
+        /* Footer */
+        .footer {
+            background-color: var(--card-bg);
+            color: var(--text-color);
+            padding: 20px 0;
+            text-align: center;
+            margin-top: auto;
+        }
 
-.social-icons {
-    margin: 10px 0;
-    display: flex;
-    gap: 15px;
-}
+        /* Responsive Design */
+        @media (max-width: 768px) {
+            .input-container {
+                flex-direction: column;
+            }
 
-.social-icons a {
-    color: #fff;
-    font-size: 24px;
-    transition: color 0.3s ease;
-}
+            input, button:not(.theme-toggle, .burger-menu) {
+                width: 100%;
+            }
 
-.social-icons a:hover {
-    color: #f312d9;
-}
+            h1 {
+                font-size: 2em;
+            }
 
-/* Media Queries for Responsiveness */
-@media (max-width: 768px) {
-    .input-container {
-        flex-direction: column;
-        align-items: center;
-        gap: 10px; /* Maintain spacing between input, button, and toggle */
-    }
-
-    input {
-        width: 100%;
-        margin-bottom: 10px;
-    }
-
-    button {
-        width: 100%;
-        margin-top: 10px; /* Ensure the button has some space from the input */
-    }
-
-    .theme-toggle {
-        width: 100%;
-        margin-top: 10px; /* Ensure the toggle has some space from the button */
-    }
-
-    h1 {
-        font-size: 2em;
-    }
-
-    #profile img {
-        width: 100px;
-    }
-
-    #languagesChart {
-        height: 300px;
-    }
-}
-
-/* Mobile Footer Adjustments */
-@media (max-width: 768px) {
-    .footer .container {
-        flex-direction: column;
-    }
-
-    .social-icons {
-        gap: 10px;
-    }
-}
+            .sidebar {
+                width: 100%;
+                left: -100%;
+            }
+            
+            .sidebar.active {
+                left: 0;
+            }
+        }
+            
